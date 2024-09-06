@@ -1,0 +1,66 @@
+version: 2
+
+sources:
+  - name: jaffle_shop
+    description: dataset from Jaffle shop within GBQ
+    tables:
+      - name: customers
+        description: raw data regarding Jaffle shop customers
+        columns:
+          - name: ID
+            description: primary key - unique customer identifier
+            tests:
+              - unique
+              - not_null
+          - name: FIRST_NAME
+            description: customer's first name
+          - name: LAST_NAME
+            description: customer's last name
+      - name: orders
+        description: raw data regarding Jaffle shop orders
+        columns:
+          - name: ID
+            description: primary key - unique order identifier
+            tests:
+              - unique
+              - not_null
+          - name: USER_ID
+            description: customer identifier
+          - name: ORDER_DATE
+            description: date of order
+          - name: STATUS
+            description: '{{ doc("order_status") }}'
+            tests:
+              - accepted_values:
+                  values: [completed, shipped, returned, placed, return_pending]
+          - name: _etl_loaded_at
+            description : date of loaded data from etl pipeline
+  - name: stripe
+    description: dataset from Stripe within GBQ
+    tables:
+      - name: payments
+        description: raw data regarding payment from Jaffle shop customers
+        columns:
+          - name: id
+            description: primary key - unique payment identifier
+            tests:
+              - unique
+              - not_null
+          - name: orderid
+            description: order identifier
+          - name: paymentmethod
+            description: '{{ doc("payment_method") }}'
+            tests:
+              - accepted_values:
+                  values: [coupon, gift_card, credit_card, bank_transfer]
+          - name: status
+            description: '{{ doc("payment_status") }}'
+            tests:
+              - accepted_values:
+                  values: [fail, success]
+          - name: amount
+            description: total sum paid in dollars
+          - name: created
+            description: date of payment
+          - name: _batched_at
+            description: date of loaded batch data
