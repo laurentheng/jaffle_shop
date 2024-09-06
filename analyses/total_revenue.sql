@@ -1,7 +1,7 @@
 WITH payments AS (
     SELECT
     *
-    FROM {{ ref('stg_payments') }} 
+    FROM {{ ref("stg_stripe__payments") }} 
 ),
 
 aggregated AS ( 
